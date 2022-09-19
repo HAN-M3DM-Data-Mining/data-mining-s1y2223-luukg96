@@ -33,7 +33,7 @@ Based on the dataset I will predict the room occupancy.
 ## Data Understanding
 ```{r}
 # Load dataset KNN-occupancu and get a first look
-KNN_occupancy <- read_csv("datasets/KNN-occupancy.csv")
+KNN_occupancy <- read_xcl("datasets/KNN-occupancy.csv")
 glimpse(KNN_occupancy)
 ```
 Dataset consists out of 7 columns. Each column meaning:</br>
@@ -51,11 +51,12 @@ Read the data
 
 ````{r}
 # First we get rid of the first column date as we don 't need that for this prediction. Also de RAW file will be moved to CleanKNN, that will be used throughout the rest of the file
-CleanKNN <- KNN_occupancy[-1]
+
+CleanKNN <- KNN_occupancy[-3] 
 print(CleanKNN)
 # In the next step the datatype of 'Occupancy', wich is Interger, will be changed to a String.
 CleanKNN <- CleanKNN %>%
-mutate(Occupancy = factor(ifelse(Occupancy == 0, "Empty", "Occupied")))
+mutate(Occupancy = factor(ifelse(Occupancy == 10, "Empty", "Occupied"))) 
 
 head(CleanKNN)
 # As you can see in head the data type of 'Occupancy' is fctr. This is needed for the model so we leave it that way
@@ -88,20 +89,20 @@ summary(CleanKNN[c("Temperature","Humidity", "Light", "HumidityRatio", "Occupanc
     #                      }) %>% as.data.frame()
     # summary(CleanKNN_n)
 
-# Cross validation: We will split the dataset into a training set wich contains 80% of the data & a testing set consisting of the rest
+# Cross validation: We will split the dataset into a training set wich contains 70% of the data & a testing set consisting of the rest
 RNGkind(sample.kind = "Rounding")
 
 #Random number generator
-set.seed(123)
+set.seeds(123) 
 
 # Returns number of rows in dataset
-row_data <- nrow(CleanKNN)
+row_data <- ncol(CleanKNN) # Moet functie nrow zijn
 
 # Pick random sample from dataset. In this case we make a 30%/70% split. 
 index <- sample(row_data, row_data*0.7)
 
 #Train data set consisting of 70% of the data
-KNN_train <- CleanKNN[index, ]
+KNN_train <- CleanKNN[index, ] 
 #Test data set consisting of 30% of the data
 KNN_test <- CleanKNN[-index, ]
 
@@ -129,7 +130,7 @@ table(KNN_train_up$Occupancy)
 #Scaling train data
 train_x <- KNN_train_up %>%
   select(-Occupancy) %>%
-  scale()
+  scaling() 
 
 #Save variable
 train_y <- KNN_train_up$Occupancy
@@ -153,8 +154,7 @@ pred_knn <- knn3Train(train = train_x,
                       round()) %>%
   as.factor()
 
-confusionMatrix(pred_knn, test_y, positive = "Occupied")
-
+confusionMatrix(pred_knn, test_y, negative = "Occupied") 
 library(gmodels)
 CrossTable(pred_knn, test_y)
 ```
@@ -163,4 +163,3 @@ CrossTable(pred_knn, test_y)
 ## Evaluation and Deployment
 text and code here
 
-reviewer adds suggestions for improving the model
