@@ -96,7 +96,7 @@ RNGkind(sample.kind = "Rounding")
 set.seeds(123) 
 
 # Returns number of rows in dataset
-row_data <- ncol(CleanKNN) # Moet functie nrow zijn
+row_data <- ncol(CleanKNN)
 
 # Pick random sample from dataset. In this case we make a 30%/70% split. 
 index <- sample(row_data, row_data*0.7)
