@@ -31,8 +31,11 @@ rawDF <- NB_fakenews
 summary(rawDF)
 
 ## Differentiate real news and fake news in a variable
+
+#Repaired -----------------------------------------------------------------------------
 # Fakenews <- rawDF %>% filter(label == 0) hard to see, but fake is labeled as 1
 # News <- rawDF %>% filter(label == 1) real is labeled as 0
+
 Fakenews <- rawDF %>% filter(label == 1) 
 News <- rawDF %>% filter(label == 0)
 
@@ -56,7 +59,9 @@ cleanCorpus <- rawCorpus %>% tm_map(tolower) %>% tm_map(removeNumbers)
 cleanCorpus <- cleanCorpus %>% tm_map(tolower) %>% tm_map(removeWords, stopwords()) %>% tm_map(removePunctuation)
 
 ## cleaning up: remove strip white lines
-# cleanCorpus <- cleanCorpus %>% tm_map(strip_White_space) 
+# Repiared ------------------------------------------------------------------
+# cleanCorpus <- cleanCorpus %>% tm_map(strip_White_space) No underscore needed to call fucntion
+
 cleanCorpus <- cleanCorpus %>% tm_map(stripWhitespace) 
 
 ##inspect Corpus
@@ -87,7 +92,9 @@ trainDTM <- cleanDTM[trainIndex, ]
 testDTM <- cleanDTM[-trainIndex, ]
 
 ##elimate words with low frequencies
+# Repaird ------------------------------------------------------------------------
 # freqWords <- trainDTM %>% findFreqTerms(5) to low for this dataset has to be higher to reduce computation time. 
+
 freqWords <- trainDTM %>% findFreqTerms(250)
 trainDTM <-  DocumentTermMatrix(trainCorpus, list(dictionary = freqWords))
 testDTM <-  DocumentTermMatrix(testCorpus, list(dictionary = freqWords))
@@ -113,8 +120,12 @@ nbayesModel <-  naiveBayes(trainDTM, trainDF$label, laplace = 1)
 
 ##generating a vector of predictions
 predVec <- predict(nbayesModel, testDTM)
+
+# Repaired ---------------------------------------------------------------------------------------------
 # confusionMatrix( as.factor(predVec, testDF$label, positive = 1, dnn = c("Prediction", "True")))
 # only label as to be converted to factor and postive needs to be a character
+
+
 confusionMatrix(predVec, as.factor( testDF$label), positive = "1", dnn = c("Prediction", "True"))
 ```
 
